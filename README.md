@@ -8,7 +8,7 @@ When viewing any LinkedIn contact profile (`https://www.linkedin.com/in/*`), thi
 
 ## ✨ Features
 
-- **LinkedIn Profile Auto-Detection**: Automatically parses LinkedIn profile handles and full names (`Jessie Grenfell`).
+- **LinkedIn Profile Auto-Detection**: Automatically parses LinkedIn profile handles and full names (`Jessie Sa`).
 - **Seamless Contact Reconciliation**:
   - **Auto-Link Detection**: Automatically recognizes previously linked contacts on page load, turns the button **GREEN** (`✓ Linked: Name`), and loads all existing notes.
   - **Search & Match**: Search all Google Contacts by name/email and link with 1 click without losing existing notes.
