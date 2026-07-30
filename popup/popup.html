@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LinkedIn Contact Reconciler</title>
+  <style>
+    :root {
+      --primary: #0a66c2;
+      --bg: #ffffff;
+      --text: #191919;
+      --text-muted: #666666;
+      --border: #e0e0e0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #1b1f23;
+        --text: #f3f4f6;
+        --text-muted: #9ca3af;
+        --border: #374151;
+      }
+    }
+    body {
+      width: 340px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .header-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--primary);
+      color: #fff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .header-title {
+      font-weight: 700;
+      font-size: 15px;
+    }
+    .card {
+      background: rgba(0, 0, 0, 0.03);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ef4444;
+      margin-right: 6px;
+    }
+    .status-dot.active {
+      background: #10b981;
+    }
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 13px;
+      transition: background 0.15s;
+    }
+    .btn:hover {
+      background: #004182;
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      margin-top: 8px;
+    }
+    .btn-secondary:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--text);
+    }
+    .error-box {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+      word-break: break-word;
+      display: none;
+    }
+    .diag-box {
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.04);
+      padding: 8px;
+      border-radius: 6px;
+      font-family: monospace;
+      word-break: break-all;
+      margin-top: 6px;
+    }
+    .instructions {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-icon">📇</div>
+    <div class="header-title">LinkedIn Reconciler</div>
+  </div>
+
+  <button class="btn" id="launch-panel-btn" style="background:#10b981; margin-bottom:12px; font-size:14px; font-weight:bold;">🚀 Open Reconciler on Current Page</button>
+
+  <div class="card">
+    <div style="font-size:13px; font-weight:600; margin-bottom: 4px;">Google Account Status</div>
+    <div id="auth-status" style="font-size:12px; color:var(--text-muted);">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-text">Checking authentication...</span>
+    </div>
+  </div>
+
+
+  <div class="error-box" id="error-box"></div>
+
+  <button class="btn" id="auth-btn">Sign In with Google (Chrome Native)</button>
+  <button class="btn btn-secondary" id="auth-web-btn" style="margin-top:6px;">Sign In via Google Web Window</button>
+  <button class="btn btn-secondary" id="signout-btn" style="display:none; margin-top:6px;">Sign Out</button>
+
+
+  <div class="card" style="margin-top: 14px;">
+    <div style="font-size:12px; font-weight:600; cursor:pointer; display:flex; justify-content:space-between;" id="diag-toggle">
+      <span>⚙️ OAuth & Extension Diagnostics</span>
+      <span>▼</span>
+    </div>
+    <div id="diag-content" style="display:none; margin-top:8px;">
+      <div style="font-size:11px; color:var(--text-muted);"><b>Extension ID:</b></div>
+      <div class="diag-box" id="diag-ext-id">...</div>
+      
+      <div style="font-size:11px; color:var(--text-muted); margin-top:6px;"><b>Redirect URI (for Web Auth):</b></div>
+      <div class="diag-box" id="diag-redirect-uri">...</div>
+
+      <div style="font-size:11px; color:var(--text-muted); margin-top:6px;"><b>Configured Client ID:</b></div>
+      <div class="diag-box" id="diag-client-id">...</div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
+

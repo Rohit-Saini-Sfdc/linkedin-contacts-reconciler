@@ -1,0 +1,394 @@
+/* ==========================================================================
+   LinkedIn Contact Reconciler Overlay - Styles
+   ========================================================================== */
+
+:root {
+  --lcr-primary: #0a66c2;
+  --lcr-primary-hover: #004182;
+  --lcr-accent: #10b981;
+  --lcr-accent-hover: #059669;
+  --lcr-bg: rgba(255, 255, 255, 0.95);
+  --lcr-bg-glass: rgba(255, 255, 255, 0.85);
+  --lcr-text: #191919;
+  --lcr-text-muted: #666666;
+  --lcr-border: #e0e0e0;
+  --lcr-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08);
+  --lcr-radius-lg: 16px;
+  --lcr-radius-md: 10px;
+  --lcr-radius-sm: 6px;
+  --lcr-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --lcr-bg: rgba(27, 31, 35, 0.96);
+    --lcr-bg-glass: rgba(27, 31, 35, 0.88);
+    --lcr-text: #f3f4f6;
+    --lcr-text-muted: #9ca3af;
+    --lcr-border: #374151;
+    --lcr-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Floating Widget Container */
+#lcr-widget-root {
+  position: fixed !important;
+  top: 90px !important;
+  right: 24px !important;
+  z-index: 2147483647 !important; /* Max CSS z-index */
+  font-family: var(--lcr-font);
+  font-size: 14px;
+  color: var(--lcr-text);
+  box-sizing: border-box;
+  pointer-events: auto !important;
+}
+
+#lcr-widget-root * {
+  box-sizing: border-box;
+}
+
+/* Toggle Trigger Pill */
+.lcr-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
+  color: #ffffff !important;
+  border: 2px solid #ffffff;
+  border-radius: 30px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lcr-toggle-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 28px rgba(10, 102, 194, 0.6);
+}
+
+
+.lcr-toggle-btn .lcr-badge {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-size: 11px;
+}
+
+/* Drawer Card Panel */
+.lcr-panel {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 380px;
+  max-height: 82vh;
+  background: var(--lcr-bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--lcr-border);
+  border-radius: var(--lcr-radius-lg);
+  box-shadow: var(--lcr-shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: lcrSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes lcrSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.lcr-panel.hidden {
+  display: none !important;
+}
+
+/* Header */
+.lcr-header {
+  padding: 14px 18px;
+  background: rgba(10, 102, 194, 0.06);
+  border-bottom: 1px solid var(--lcr-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.lcr-header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.lcr-header-title svg {
+  color: var(--lcr-primary);
+}
+
+.lcr-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--lcr-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+}
+
+.lcr-close-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--lcr-text);
+}
+
+/* Body Content Scrollable */
+.lcr-body {
+  padding: 18px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Status Banner */
+.lcr-status-card {
+  padding: 12px 14px;
+  border-radius: var(--lcr-radius-md);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lcr-status-card.linked {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--lcr-text);
+}
+
+.lcr-status-card.unlinked {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: var(--lcr-text);
+}
+
+.lcr-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--lcr-primary);
+}
+
+.lcr-contact-meta {
+  flex: 1;
+  overflow: hidden;
+}
+
+.lcr-contact-name {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lcr-contact-sub {
+  font-size: 11px;
+  color: var(--lcr-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Section Title */
+.lcr-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--lcr-text-muted);
+  margin-bottom: 6px;
+}
+
+/* Search Box */
+.lcr-search-box {
+  position: relative;
+}
+
+.lcr-input {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--lcr-border);
+  border-radius: var(--lcr-radius-sm);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--lcr-text);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lcr-input {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.lcr-input:focus {
+  border-color: var(--lcr-primary);
+  box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.15);
+}
+
+/* Search Results Dropdown */
+.lcr-search-results {
+  margin-top: 6px;
+  background: var(--lcr-bg);
+  border: 1px solid var(--lcr-border);
+  border-radius: var(--lcr-radius-md);
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.lcr-search-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--lcr-border);
+  transition: background 0.15s;
+}
+
+.lcr-search-item:last-child {
+  border-bottom: none;
+}
+
+.lcr-search-item:hover {
+  background: rgba(10, 102, 194, 0.08);
+}
+
+/* Form Group for Notes */
+.lcr-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lcr-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lcr-text);
+}
+
+.lcr-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--lcr-border);
+  border-radius: var(--lcr-radius-sm);
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--lcr-text);
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 52px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+@media (prefers-color-scheme: dark) {
+  .lcr-textarea {
+    background: rgba(0, 0, 0, 0.3);
+  }
+}
+
+.lcr-textarea:focus {
+  border-color: var(--lcr-primary);
+  box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.15);
+}
+
+/* Actions Footer */
+.lcr-footer {
+  padding: 12px 18px;
+  border-top: 1px solid var(--lcr-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.02);
+}
+
+.lcr-btn {
+  padding: 8px 16px;
+  border-radius: var(--lcr-radius-sm);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.lcr-btn-primary {
+  background: var(--lcr-primary);
+  color: #ffffff;
+}
+
+.lcr-btn-primary:hover {
+  background: var(--lcr-primary-hover);
+}
+
+.lcr-btn-secondary {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--lcr-text);
+}
+
+.lcr-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.lcr-btn-danger {
+  background: transparent;
+  color: #ef4444;
+  padding: 6px;
+  font-size: 12px;
+}
+
+.lcr-btn-danger:hover {
+  text-decoration: underline;
+}
+
+/* Sync indicator */
+.lcr-sync-badge {
+  font-size: 11px;
+  color: var(--lcr-accent);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Spinner */
+.lcr-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: lcrSpin 0.8s linear infinite;
+}
+
+@keyframes lcrSpin {
+  to { transform: rotate(360deg); }
+}
