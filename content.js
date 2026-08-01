@@ -163,10 +163,10 @@
       linkedContact = null;
       // Try searching Google Contacts by profile name automatically
       const searchRes = await sendMessage({ type: "SEARCH_CONTACTS", query: currentProfileData.name });
-      const suggestedResults = searchRes.success ? searchRes.results : [];
-      renderUnlinkedState(suggestedResults);
+      renderUnlinkedState(searchRes);
     }
   }
+
 
   function removeWidget() {
     if (widgetRoot) {
@@ -326,7 +326,7 @@
   /**
    * Render Unlinked State (Allows search or creation of Google Contact)
    */
-  function renderUnlinkedState(suggestedResults = []) {
+  function renderUnlinkedState(searchRes = { results: [] }) {
     const profile = currentProfileData || { name: "", jobTitle: "" };
 
     widgetRoot.innerHTML = `
@@ -353,7 +353,7 @@
           <div class="lcr-search-box">
             <input type="text" class="lcr-input" id="lcr-contact-search" placeholder="Search Google Contacts by name or email..." value="${escapeHtml(profile.name)}" />
             <div class="lcr-search-results" id="lcr-search-results">
-              ${renderSearchResultsHtml(suggestedResults)}
+              ${renderSearchResultsHtml(searchRes)}
             </div>
           </div>
 
@@ -370,8 +370,19 @@
     attachUnlinkedStateEventListeners();
   }
 
-  function renderSearchResultsHtml(results) {
-    if (!results || results.length === 0) {
+  function renderSearchResultsHtml(searchRes) {
+    if (!searchRes) return "";
+    if (searchRes.error) {
+      return `
+        <div style="padding:12px; background:rgba(239,68,68,0.1); border-radius:8px; color:#ef4444; font-size:12px;">
+          <strong>⚠️ Search Error:</strong> ${escapeHtml(searchRes.error)}
+          <br/><br/>
+          <button class="lcr-btn lcr-btn-primary" id="lcr-reauth-btn" style="padding:4px 10px; font-size:11px;">Re-authenticate Google Account</button>
+        </div>
+      `;
+    }
+    const results = searchRes.results || [];
+    if (results.length === 0) {
       return `<div style="padding:10px; color:var(--lcr-text-muted); font-size:12px;">No matching Google contacts found. Try typing a name above or create a new contact.</div>`;
     }
     return results.map(c => `
@@ -384,6 +395,7 @@
       </div>
     `).join("");
   }
+
 
   /**
    * Event Listeners
@@ -473,14 +485,25 @@
           if (query.length < 2) return;
           resultsContainer.innerHTML = `<div style="padding:10px; color:var(--lcr-text-muted);">Searching Google Contacts...</div>`;
           const res = await sendMessage({ type: "SEARCH_CONTACTS", query });
-          resultsContainer.innerHTML = renderSearchResultsHtml(res.success ? res.results : []);
+          resultsContainer.innerHTML = renderSearchResultsHtml(res);
           bindSearchItemClicks();
         }, 300);
       };
       bindSearchItemClicks();
     }
 
+    document.getElementById("lcr-reauth-btn")?.addEventListener("click", async () => {
+      await sendMessage({ type: "LOGOUT" });
+      const loginRes = await sendMessage({ type: "LOGIN" });
+      if (loginRes.success) {
+        initWidget();
+      } else {
+        alert(`Login failed: ${loginRes.error}`);
+      }
+    });
+
     if (createNewBtn) {
+
       createNewBtn.onclick = async () => {
         createNewBtn.disabled = true;
         createNewBtn.innerHTML = `<div class="lcr-spinner"></div> Creating Google Contact...`;
