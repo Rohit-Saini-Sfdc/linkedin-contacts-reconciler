@@ -118,6 +118,23 @@
     currentHandle = handle;
     currentProfileData = scrapeProfileDetails();
 
+    // If profile name is missing or equals handle, retry scraping after DOM settles
+    if (!currentProfileData || !currentProfileData.name || currentProfileData.name === handle) {
+      setTimeout(async () => {
+        const updatedProfile = scrapeProfileDetails();
+        if (updatedProfile && updatedProfile.name && updatedProfile.name !== handle) {
+          currentProfileData = updatedProfile;
+          if (!linkedContact) {
+            const searchRes = await sendMessage({ type: "SEARCH_CONTACTS", query: currentProfileData.name });
+            if (searchRes.success && searchRes.results) {
+              renderUnlinkedState(searchRes.results);
+            }
+          }
+        }
+      }, 700);
+    }
+
+
     // Check if widget DOM exists, otherwise build it
     if (!widgetRoot) {
       buildWidgetContainer();
