@@ -209,6 +209,7 @@
     if (ctasContainer && !document.getElementById("lcr-inline-btn")) {
       const inlineBtn = document.createElement("button");
       inlineBtn.id = "lcr-inline-btn";
+      inlineBtn.type = "button";
       inlineBtn.className = "artdeco-button artdeco-button--2 artdeco-button--primary";
       inlineBtn.style.margin = "8px 0";
       inlineBtn.style.background = "#0a66c2";
@@ -216,16 +217,64 @@
       inlineBtn.style.fontWeight = "bold";
       inlineBtn.style.borderRadius = "20px";
       inlineBtn.style.padding = "6px 16px";
+      inlineBtn.style.cursor = "pointer";
+      inlineBtn.style.zIndex = "2147483647";
       inlineBtn.innerHTML = `<span>📇 Reconcile Contact</span>`;
-      inlineBtn.onclick = () => {
+
+      const clickHandler = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+        }
         panelIsOpen = true;
         const panel = document.getElementById("lcr-panel");
-        if (panel) panel.classList.remove("hidden");
+        if (panel) {
+          panel.classList.remove("hidden");
+        }
       };
+
+      inlineBtn.addEventListener("click", clickHandler, true);
+      inlineBtn.onclick = clickHandler;
+
       ctasContainer.prepend(inlineBtn);
     }
   }
 
+  /**
+   * Event Listeners
+   */
+  function attachCommonEventListeners() {
+    const toggleBtn = document.getElementById("lcr-toggle-btn");
+    const closeBtn = document.getElementById("lcr-close-btn");
+    const panel = document.getElementById("lcr-panel");
+
+    if (toggleBtn && panel) {
+      const toggleHandler = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        panelIsOpen = !panelIsOpen;
+        panel.classList.toggle("hidden", !panelIsOpen);
+      };
+      toggleBtn.addEventListener("click", toggleHandler, true);
+      toggleBtn.onclick = toggleHandler;
+    }
+
+    if (closeBtn && panel) {
+      const closeHandler = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+        panelIsOpen = false;
+        panel.classList.add("hidden");
+      };
+      closeBtn.addEventListener("click", closeHandler, true);
+      closeBtn.onclick = closeHandler;
+    }
+  }
 
   /**
    * Render Unauthenticated State
