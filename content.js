@@ -42,6 +42,12 @@
       }
     }
 
+    name = name
+      .replace(/•\s*(1st|2nd|3rd\+?|Following|Connect)/gi, "")
+      .replace(/\((He\/Him|She\/Her|They\/Them|[^\)]+)\)/gi, "")
+      .split("\n")[0]
+      .trim();
+
     if (!name || name.toLowerCase() === handle.toLowerCase()) {
       const title = document.title || "";
       if (title.includes("|")) {
@@ -51,8 +57,14 @@
       }
     }
 
-    name = name.split("\n")[0].trim();
+    name = name
+      .replace(/•\s*(1st|2nd|3rd\+?|Following|Connect)/gi, "")
+      .replace(/\((He\/Him|She\/Her|They\/Them|[^\)]+)\)/gi, "")
+      .split("\n")[0]
+      .trim();
+
     if (!name) name = handle;
+
 
     // Job Title / Headline
     const headlineElem = document.querySelector(".text-body-medium");
