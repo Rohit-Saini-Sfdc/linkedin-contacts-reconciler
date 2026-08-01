@@ -110,38 +110,16 @@
       return;
     }
 
-    if (currentHandle === handle && widgetRoot) {
-      injectInlineButton();
-      return; // Already initialized for this handle
-    }
-
     currentHandle = handle;
     currentProfileData = scrapeProfileDetails();
 
-    // If profile name is missing or equals handle, retry scraping after DOM settles
-    if (!currentProfileData || !currentProfileData.name || currentProfileData.name === handle) {
-      setTimeout(async () => {
-        const updatedProfile = scrapeProfileDetails();
-        if (updatedProfile && updatedProfile.name && updatedProfile.name !== handle) {
-          currentProfileData = updatedProfile;
-          if (!linkedContact) {
-            const searchRes = await sendMessage({ type: "SEARCH_CONTACTS", query: currentProfileData.name });
-            if (searchRes.success && searchRes.results) {
-              renderUnlinkedState(searchRes.results);
-            }
-          }
-        }
-      }, 700);
-    }
-
-
-    // Check if widget DOM exists, otherwise build it
+    // Check if widget DOM container exists, otherwise build it
     if (!widgetRoot) {
       buildWidgetContainer();
     }
 
     injectInlineButton();
-    renderLoadingState();
+    renderLoadingState("Connecting to Google Contacts...");
 
     // Check Auth Status
     const authRes = await sendMessage({ type: "CHECK_AUTH" });
@@ -152,7 +130,7 @@
     }
 
     // Find if contact is already linked
-    console.log("[LinkedIn Reconciler] Searching for linked contact for handle:", handle);
+    renderLoadingState("Searching for linked contact...");
     const findRes = await sendMessage({ type: "FIND_LINKED_CONTACT", handle });
     if (findRes.success && findRes.contact) {
       console.log("[LinkedIn Reconciler] Found linked contact:", findRes.contact.displayName);
@@ -161,12 +139,11 @@
     } else {
       console.log("[LinkedIn Reconciler] No direct handle link found. Searching suggested contacts by name:", currentProfileData.name);
       linkedContact = null;
-      // Try searching Google Contacts by profile name automatically
+      renderLoadingState("Searching Google Contacts...");
       const searchRes = await sendMessage({ type: "SEARCH_CONTACTS", query: currentProfileData.name });
       renderUnlinkedState(searchRes);
     }
   }
-
 
   function removeWidget() {
     if (widgetRoot) {
