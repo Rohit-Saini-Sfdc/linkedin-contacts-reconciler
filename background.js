@@ -6,10 +6,11 @@ const NoteParser = globalThis.NoteParser;
 
 
 /**
- * Retrieve cached token from chrome.storage.local or memory
+ * Retrieve cached token from chrome.storage.local
  */
 async function getStoredToken() {
-  const data = await chrome.storage.local.get("stored_oauth_token");
+  const data = await chrome.storage.local.get(["stored_oauth_token", "is_logged_out"]);
+  if (data.is_logged_out) return null;
   return data.stored_oauth_token || null;
 }
 
@@ -18,9 +19,10 @@ async function getStoredToken() {
  */
 async function setStoredToken(token) {
   if (token) {
-    await chrome.storage.local.set({ stored_oauth_token: token });
+    await chrome.storage.local.set({ stored_oauth_token: token, is_logged_out: false });
   } else {
     await chrome.storage.local.remove("stored_oauth_token");
+    await chrome.storage.local.set({ is_logged_out: true });
   }
 }
 
@@ -95,8 +97,12 @@ async function getAuthTokenWebFlow(interactive = true) {
  * Unified OAuth Token Retriever with Fallback
  */
 async function getAuthToken(interactive = true) {
-  // Check stored token first
-  const existingToken = await getStoredToken();
+  const data = await chrome.storage.local.get(["stored_oauth_token", "is_logged_out"]);
+  if (data.is_logged_out && !interactive) {
+    throw new Error("User manually logged out.");
+  }
+
+  const existingToken = data.stored_oauth_token;
   if (existingToken && !interactive) {
     return existingToken;
   }
@@ -134,9 +140,10 @@ async function invalidateToken(token) {
   const currentToken = token || (await getStoredToken());
   if (currentToken) {
     chrome.identity.removeCachedAuthToken({ token: currentToken }, () => {});
-    await setStoredToken(null);
   }
+  await setStoredToken(null);
 }
+
 
 /**
  * Safely execute API function with token auto-refresh retry
